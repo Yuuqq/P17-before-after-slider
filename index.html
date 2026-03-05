@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>P17 灾前/灾后对比滑块</title>
+    <link rel="stylesheet" href="../shared/design-tokens.css" />
+<link rel="stylesheet" href="./styles.css" />
+  <meta name="description" content="灾前 / 灾后对比滑块。P17 灾前/灾后对比滑块" />
+  <meta property="og:title" content="P17 灾前灾后对比滑块" />
+  <meta property="og:description" content="灾前灾后对比滑块 — 前端纯静态新闻工具" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yuuqq.github.io/P17-before-after-slider/" />
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>灾前 / 灾后对比滑块</h1>
+      <p>上传两张图，通过滑块直观比较现场变化。</p>
+    </header>
+
+    <section class="card controls">
+      <label for="beforeInput">灾前图 <input id="beforeInput" type="file" accept="image/*" /></label>
+      <label for="beforeInput">灾后图 <input id="afterInput" type="file" accept="image/*"  aria-label="a ft er In pu t"/></label>
+      <p id="status" aria-live="polite">状态: 等待上传两张图片</p>
+    </section>
+
+    <section class="card">
+      <div id="compare" class="compare">
+        <img id="beforeImg" class="base" alt="before" />
+        <div id="afterWrap" class="after-wrap">
+          <img id="afterImg" alt="after" />
+        </div>
+        <input id="slider" type="range" min="0" max="100" value="50"  aria-label="对比滑块"/>
+      </div>
+    </section>
+  </main>
+    <script src="./pm-metrics.js" defer></script>
+<script src="./app.js" defer></script>
+
+  <!-- Privacy Notice -->
+  <div style="text-align:center;padding:12px 16px;font-size:12px;color:#888;border-top:1px solid #eee;margin-top:24px;">
+    🔒 隐私提示：本工具所有数据处理均在您的浏览器本地完成，不会上传任何数据至服务器。
+  </div>
+
+  <!-- Cross-Project Navigation -->
+  <nav style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:16px;color:#666;">
+    <a href="https://yuuqq.github.io/_codex/" style="text-decoration:none;">📋 工具箱导航</a>
+    <span style="opacity:.4">P17</span>
+  </nav>
+</body>
+</html>
