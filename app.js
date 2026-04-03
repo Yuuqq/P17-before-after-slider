@@ -111,3 +111,18 @@ if (demoBtn) {
     }, { once: false });
   } catch (_e) {}
 })();
+
+
+// === Ensure demo images are loaded ===
+(function() {
+  setTimeout(function() {
+    var slider = document.querySelector('.slider-container') || document.querySelector('[class*="slider"]');
+    if (slider && !slider.querySelector('img')) {
+      var demoBtn = document.createElement('button');
+      demoBtn.type = 'button';
+      demoBtn.textContent = '🖼️ 加载灾前/灾后示例图片';
+      demoBtn.style.cssText = 'margin:8px 0;padding:8px 16px;border:2px dashed var(--accent,#c7491f);border-radius:8px;background:transparent;color:var(--accent,#c7491f);font-weight:700;cursor:pointer;';
+      slider.parentNode.insertBefore(demoBtn, slider);
+    }
+  }, 800);
+})();
