@@ -20,12 +20,16 @@ function loadImage(file, target) {
 }
 
 beforeInput.addEventListener("change", e => {
-  loadImage(e.target.files?.[0], beforeImg);
+  const beforeFile = e.target.files?.[0];
+  if (!beforeFile) return;
+  loadImage(beforeFile, beforeImg);
   setStatus("已加载灾前图");
 });
 
 afterInput.addEventListener("change", e => {
-  loadImage(e.target.files?.[0], afterImg);
+  const afterFile = e.target.files?.[0];
+  if (!afterFile) return;
+  loadImage(afterFile, afterImg);
   setStatus("已加载灾后图");
 });
 
@@ -112,17 +116,3 @@ if (demoBtn) {
   } catch (_e) {}
 })();
 
-
-// === Ensure demo images are loaded ===
-(function() {
-  setTimeout(function() {
-    var slider = document.querySelector('.slider-container') || document.querySelector('[class*="slider"]');
-    if (slider && !slider.querySelector('img')) {
-      var demoBtn = document.createElement('button');
-      demoBtn.type = 'button';
-      demoBtn.textContent = '🖼️ 加载灾前/灾后示例图片';
-      demoBtn.style.cssText = 'margin:8px 0;padding:8px 16px;border:2px dashed var(--accent,#c7491f);border-radius:8px;background:transparent;color:var(--accent,#c7491f);font-weight:700;cursor:pointer;';
-      slider.parentNode.insertBefore(demoBtn, slider);
-    }
-  }, 800);
-})();
