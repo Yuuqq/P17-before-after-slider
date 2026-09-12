@@ -10,27 +10,33 @@ function setStatus(text) {
   statusEl.textContent = `状态: ${text}`;
 }
 
-function loadImage(file, target) {
+function loadImage(file, target, label) {
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    target.src = reader.result;
-  };
-  reader.readAsDataURL(file);
+
+  if (!file.type.startsWith('image/')) {
+    setStatus("错误: 请上传有效的图片文件");
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    setStatus("错误: 图片体积过大，请上传小于 10MB 的文件");
+    return;
+  }
+
+  if (target.src) {
+    URL.revokeObjectURL(target.src);
+  }
+
+  target.src = URL.createObjectURL(file);
+  setStatus(`已加载${label}`);
 }
 
 beforeInput.addEventListener("change", e => {
-  const beforeFile = e.target.files?.[0];
-  if (!beforeFile) return;
-  loadImage(beforeFile, beforeImg);
-  setStatus("已加载灾前图");
+  loadImage(e.target.files?.[0], beforeImg, "灾前图");
 });
 
 afterInput.addEventListener("change", e => {
-  const afterFile = e.target.files?.[0];
-  if (!afterFile) return;
-  loadImage(afterFile, afterImg);
-  setStatus("已加载灾后图");
+  loadImage(e.target.files?.[0], afterImg, "灾后图");
 });
 
 slider.addEventListener("input", () => {
@@ -116,3 +122,17 @@ if (demoBtn) {
   } catch (_e) {}
 })();
 
+
+// === Ensure demo images are loaded ===
+(function() {
+  setTimeout(function() {
+    var slider = document.querySelector('.slider-container') || document.querySelector('[class*="slider"]');
+    if (slider && !slider.querySelector('img')) {
+      var demoBtn = document.createElement('button');
+      demoBtn.type = 'button';
+      demoBtn.textContent = '🖼️ 加载灾前/灾后示例图片';
+      demoBtn.style.cssText = 'margin:8px 0;padding:8px 16px;border:2px dashed var(--accent,#c7491f);border-radius:8px;background:transparent;color:var(--accent,#c7491f);font-weight:700;cursor:pointer;';
+      slider.parentNode.insertBefore(demoBtn, slider);
+    }
+  }, 800);
+})();
