@@ -8,7 +8,7 @@
  * 3. 网络优先 (Network-First) 获取 API 请求
  * 4. 离线回退页面
  */
-const CACHE_NAME = "journalism-tool-P17-v4-edge2-sense-2-3-4-r20260922";
+const CACHE_NAME = "journalism-tool-P17-v5-slider-align";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -103,12 +103,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
-      }).catch(() => {
-        // Offline fallback
-        if (event.request.destination === "document") {
-          return caches.match("./index.html");
-        }
-      });
+      }).catch(() => new Response("", { status: 504, statusText: "Offline" }));
     })
   );
 });
