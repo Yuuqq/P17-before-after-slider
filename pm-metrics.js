@@ -1,7 +1,7 @@
 (() => {
   const PROJECT_ID = "P17-before-after-slider";
-  const PROJECT_CLUSTER = "数据清洗可视化";
-  const DEFAULT_TASK = "data_pipeline_core_task";
+  const PROJECT_CLUSTER = "多媒体与沉浸式新闻";
+  const DEFAULT_TASK = "slider_compare";
   const STORAGE_KEY = "pm_metrics_events_" + PROJECT_ID;
   const SESSION_KEY = "pm_metrics_session_" + PROJECT_ID;
   const TASK_START_KEY = "pm_metrics_task_start_" + PROJECT_ID;

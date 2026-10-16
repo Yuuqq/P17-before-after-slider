@@ -10,27 +10,86 @@ function setStatus(text) {
   statusEl.textContent = `状态: ${text}`;
 }
 
-function loadImage(file, target) {
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const blobUrls = new WeakMap();
+const loadSeq = new WeakMap();
+let compareStarted = false;
+let compareCompleted = false;
+
+function releaseBlob(target) {
+  const url = blobUrls.get(target);
+  if (!url) return;
+  URL.revokeObjectURL(url);
+  blobUrls.delete(target);
+}
+
+function imagesDecoded() {
+  return beforeImg.complete && afterImg.complete && beforeImg.naturalWidth > 0 && afterImg.naturalWidth > 0;
+}
+
+function noteImageReady() {
+  const metrics = window.pmMetrics;
+  if (!metrics) return;
+  try {
+    if (!compareStarted) {
+      compareStarted = true;
+      metrics.markTaskStart("slider_compare");
+    }
+    if (!compareCompleted && imagesDecoded()) {
+      compareCompleted = true;
+      metrics.markTaskComplete("slider_compare");
+    }
+  } catch (_e) {}
+}
+
+function beginLoad(target) {
+  const seq = (loadSeq.get(target) || 0) + 1;
+  loadSeq.set(target, seq);
+  target.onload = null;
+  target.onerror = null;
+  releaseBlob(target);
+  return seq;
+}
+
+function loadImage(file, target, label) {
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    target.src = reader.result;
+
+  const type = file.type || "";
+  const allowed = type === "" || (type.startsWith("image/") && type !== "image/svg+xml");
+  if (!allowed) {
+    setStatus(`错误: 请上传图片文件作为${label}`);
+    return;
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    setStatus(`错误: ${label}超过 10MB`);
+    return;
+  }
+
+  const seq = beginLoad(target);
+  const url = URL.createObjectURL(file);
+  blobUrls.set(target, url);
+  setStatus(`正在加载${label}…`);
+
+  target.onload = () => {
+    if (loadSeq.get(target) !== seq) return;
+    setStatus(`已加载${label}`);
+    noteImageReady();
   };
-  reader.readAsDataURL(file);
+  target.onerror = () => {
+    if (loadSeq.get(target) !== seq) return;
+    releaseBlob(target);
+    target.removeAttribute("src");
+    setStatus(`错误: ${label}无法显示，请换一张图片`);
+  };
+  target.src = url;
 }
 
 beforeInput.addEventListener("change", e => {
-  const beforeFile = e.target.files?.[0];
-  if (!beforeFile) return;
-  loadImage(beforeFile, beforeImg);
-  setStatus("已加载灾前图");
+  loadImage(e.target.files?.[0], beforeImg, "灾前图");
 });
 
 afterInput.addEventListener("change", e => {
-  const afterFile = e.target.files?.[0];
-  if (!afterFile) return;
-  loadImage(afterFile, afterImg);
-  setStatus("已加载灾后图");
+  loadImage(e.target.files?.[0], afterImg, "灾后图");
 });
 
 slider.addEventListener("input", () => {
@@ -93,26 +152,18 @@ if (demoBtn) {
     ctx2.fillStyle = "#fff"; ctx2.font = "bold 20px sans-serif"; ctx2.textAlign = "center";
     ctx2.fillText("灾后 (After)", 400, 40);
 
+    beginLoad(beforeImg);
+    beginLoad(afterImg);
     beforeImg.src = c1.toDataURL();
     afterImg.src = c2.toDataURL();
     setStatus("✅ 已加载示例图片 — 拖动滑块对比灾前/灾后");
+    noteImageReady();
+    if (!compareCompleted) {
+      const finish = () => noteImageReady();
+      beforeImg.addEventListener("load", finish, { once: true });
+      afterImg.addEventListener("load", finish, { once: true });
+    }
   });
 }
 
-// === PM Metrics Integration ===
-(function() {
-  try {
-    if (!window.pmMetrics) return;
-    // Auto mark task start on first meaningful interaction
-    let taskStarted = false;
-    document.addEventListener('click', function(e) {
-      if (taskStarted) return;
-      const btn = e.target.closest('button');
-      if (btn) {
-        taskStarted = true;
-        window.pmMetrics.markTaskStart('slider_load_task');
-      }
-    }, { once: false });
-  } catch (_e) {}
-})();
 
