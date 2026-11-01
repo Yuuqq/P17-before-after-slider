@@ -1,403 +1,155 @@
-:root {
-  --bg: #f3f5f8;
-  --card: #fff;
-  --line: #d1d7df;
-  --ink: #1f2a36;
+/* P17 对比滑块 — 只放布局。颜色、字体、圆角、动效走 shared tokens。 */
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
 }
-* { box-sizing: border-box; }
-body {
+
+.hero p {
   margin: 0;
-  color: var(--ink);
-  font-family: "Source Sans 3", "Noto Sans SC", sans-serif;
-  background:
-    radial-gradient(circle at 10% 12%, #e3edff 0, transparent 34%),
-    radial-gradient(circle at 86% 86%, #e6f7ff 0, transparent 34%),
-    var(--bg);
+  max-width: 62ch;
+  color: var(--ink-secondary);
 }
-.app { max-width: 980px; margin: 0 auto; padding: 16px; }
-.hero, .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
-.hero h1 { margin: 0 0 8px; }
-.controls { display: flex; gap: 12px; flex-wrap: wrap; }
-label { display: grid; gap: 6px; font-weight: 700; }
+
+.tool-teach p {
+  margin: 0;
+}
+
+/* modern-styles 的链接下划线特异性很高，字标与跳过链接要显式压回去。 */
+a.tool-chrome__mark:not(.btn):not(.map-link):not(.open-btn):not(.chip):not(.pill):not(.gnav-item) {
+  color: var(--ink) !important;
+  text-decoration-line: none !important;
+}
+
+a.tool-chrome__mark:not(.btn):not(.map-link):not(.open-btn):not(.chip):not(.pill):not(.gnav-item):hover {
+  color: var(--accent-hover) !important;
+}
+
+a.skip-link:not(.btn):not(.map-link):not(.open-btn):not(.chip):not(.pill):not(.gnav-item) {
+  background: var(--ink) !important;
+  color: var(--paper-hi) !important;
+  text-decoration-line: none !important;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: end;
+  margin-bottom: var(--space-md);
+}
+
+.controls label {
+  display: grid;
+  gap: var(--space-xs);
+  flex: 1 1 220px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.control-actions {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+  align-items: center;
+}
+
+#status {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.9rem;
+}
+
+.stage {
+  margin: 0;
+}
 
 .compare {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 12px;
+  padding: 0;
+  border: var(--rule-hair) solid var(--line);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: #f0f0f0;
+  background: var(--card);
+  container-type: inline-size;
 }
 
 .compare img {
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
   display: block;
+  border-radius: 0;
+  box-shadow: none;
 }
 
+.compare img:not([src]) {
+  display: none;
+}
+
+.controls input[type="file"] {
+  max-width: 100%;
+}
+
+/* 上层图保持与画布同宽，由 wrap 的宽度裁切。拖动只改宽度，不过渡。 */
 .after-wrap {
   position: absolute;
-  left: 0; top: 0; bottom: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: 50%;
   overflow: hidden;
-  border-right: 2px solid #fff;
+  border-right: 2px solid var(--cinnabar);
 }
 
-#slider {
+.after-wrap img {
+  width: 100cqi;
+  height: 100%;
+  max-width: none;
+}
+
+@supports not (width: 1cqi) {
+  .after-wrap img {
+    width: 100%;
+  }
+}
+
+.compare input[type="range"] {
   position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
+  left: var(--space-md);
+  right: var(--space-md);
+  bottom: var(--space-sm);
+  width: auto !important;
+  max-width: none;
+  margin: 0;
+  accent-color: var(--cinnabar);
 }
 
 @media (max-width: 520px) {
-  input, textarea, select { font-size: 16px; }
-}
-
-/* === Dark Mode Override (auto-generated) === */
-:root[data-theme="dark"] {
-  --bg: #1a1a2e;
-  --card: #242438;
-  --line: #3a3a50;
-  --ink: #e8e8f0;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-  --bg: #1a1a2e;
-  --card: #242438;
-  --line: #3a3a50;
-  --ink: #e8e8f0;
+  input,
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 
-/* === CSS Professor Upgrade (Round 20) === */
-
-/* Card system */
-.card, [class*="card"], section, .panel, .container > div { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.card:hover, [class*="card"]:hover { transform: translateY(-2px); }
-
-/* Button polish */
-button, .btn, [type="submit"], [type="button"] {
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-button:hover, .btn:hover, [type="submit"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-button:active, .btn:active { transform: scale(0.98); }
-
-/* Input polish */
-input, textarea, select {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-input:focus, textarea:focus, select:focus {
-  box-shadow: 0 0 0 3px rgba(199,73,31,0.15);
-}
-
-/* Link hover */
-a { transition: color 0.15s ease; }
-
-/* Focus outline */
-:focus-visible { outline: 2px solid var(--accent, #c7491f); outline-offset: 2px; }
-
-/* Mobile responsive */
-@media (max-width: 600px) {
-  body { padding: 8px; }
-  .app, main, .container { padding: 12px; }
-  h1 { font-size: 1.5rem; }
-  h2 { font-size: 1.2rem; }
-  button, .btn { width: 100%; }
-}
-
-/* === CSS Professor Animation Upgrade (Round 22) === */
-
-/* Page entrance */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.app, main, body > .container { animation: fadeInUp 0.4s ease-out; }
-
-/* Staggered card entrance */
-@keyframes cardReveal {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.card, [class*="card"], .mission-card, .module-card, .stat-card {
-  animation: cardReveal 0.35s ease-out both;
-}
-.card:nth-child(2), [class*="card"]:nth-child(2) { animation-delay: 0.05s; }
-.card:nth-child(3), [class*="card"]:nth-child(3) { animation-delay: 0.1s; }
-.card:nth-child(4), [class*="card"]:nth-child(4) { animation-delay: 0.15s; }
-.card:nth-child(5), [class*="card"]:nth-child(5) { animation-delay: 0.2s; }
-
-/* Subtle pulse for primary buttons */
-@keyframes btnPulse {
-  0%, 100% { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-  50% { box-shadow: 0 2px 12px rgba(199,73,31,0.25); }
-}
-button[id*="Btn"]:not(:disabled), .btn-primary {
-  animation: btnPulse 3s ease-in-out infinite;
-}
-button:disabled { animation: none; opacity: 0.6; }
-
-/* Smooth height transitions for collapsible sections */
-details { transition: all 0.2s ease; }
-details[open] summary { margin-bottom: 8px; }
-
-/* Tooltip fade */
-[title] { position: relative; }
-
-/* Progress bar animation */
-@keyframes progressFill {
-  from { width: 0; }
-}
-.mc-bar-fill, .mod-progress-fill, .bar-fill, progress::-webkit-progress-value {
-  animation: progressFill 0.6s ease-out;
-}
-
-/* Reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* === Loading & Feedback States === */
-@keyframes spin { to { transform: rotate(360deg); } }
-.btn-loading { position: relative; pointer-events: none; opacity: 0.7; }
-.btn-loading::after {
-  content: '';
-  position: absolute;
-  right: 8px; top: 50%;
-  width: 14px; height: 14px;
-  margin-top: -7px;
-  border: 2px solid transparent;
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-.toast-msg {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: #333; color: #fff; padding: 10px 20px; border-radius: 8px;
-  font-size: 0.9rem; z-index: 9999; opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.toast-msg.show { opacity: 1; }
-
-/* ---- Print-friendly polish (v2.3 batch) ---- */
 @media print {
-  body { background: white !important; color: black !important; }
-  .global-nav, [data-nav], .skip-link, button:not(.print-keep), .btn:not(.print-keep) { display: none !important; }
-  a { color: inherit; text-decoration: underline; }
-  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; word-break: break-all; }
-  .card, .panel, .hero { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
-  h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
-}
+  .compare {
+    background: var(--print-paper);
+    border-color: color-mix(in srgb, var(--print-ink) 22%, var(--print-paper));
+    box-shadow: none;
+  }
 
-/* =====================================================================
- * v2.4.1 deep polish (Tier-2 batch) — ui-ux-pro-max + frontend-design
- * Uses each tool's existing --accent / --line / --card / --ink tokens.
- * Architect-approved on Tier-1 (v2.4.1 / 2026-05). All :where / class
- * scoped — won't affect tools that don't use these classes.
- * ===================================================================== */
+  .after-wrap {
+    border-right-color: var(--print-ink);
+  }
 
-/* P3 Hierarchy — Hero h1 brand gradient with 3-tier fallback chain */
-.hero h1 {
-  color: var(--accent, var(--focus, #2563eb));
-  background: linear-gradient(135deg,
-    var(--accent, var(--focus, #2563eb)) 0%,
-    #1e3a8a 100%);
-  background: linear-gradient(135deg,
-    var(--accent, var(--focus, #2563eb)) 0%,
-    color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 65%, var(--ink, #0f172a)) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-@supports not (background-clip: text) {
-  .hero h1 {
-    color: var(--accent, var(--focus, #2563eb));
-    -webkit-text-fill-color: currentColor;
-    background: none;
+  .control-actions button,
+  .compare input[type="range"] {
+    display: none;
   }
 }
-
-/* P5 Layout — hero subtitle improved rhythm */
-.hero .lead { max-width: 64ch; }
-.hero .subtle { max-width: 72ch; opacity: 0.85; }
-
-/* P8 Buttons — primary via explicit hooks (no :first-of-type guesswork) */
-.btn-primary, [data-primary],
-button#scanBtn, button#submitBtn, button#generateBtn, button#checkBtn,
-button#extractBtn, button#startBtn, button#runBtn, button#analyzeBtn,
-button[type="submit"]:not(.ghost):not(.btn-secondary) {
-  background: linear-gradient(180deg,
-    var(--accent, var(--focus, #2563eb)),
-    #1e40af);
-  background: linear-gradient(180deg,
-    var(--accent, var(--focus, #2563eb)),
-    color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 78%, #000));
-  color: #fff;
-  border: 1px solid #1e40af;
-  border: 1px solid color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 70%, #000);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 6px 14px -6px rgba(37,99,235,0.5);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 6px 14px -6px color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 50%, transparent);
-}
-
-/* P7 Micro — card hover lift; guarded by hover capability + reduced-motion */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .card:not(.hero):not(:has(textarea)):not(:has(form)) {
-    transition: transform 0.18s ease, box-shadow 0.22s ease;
-  }
-  .card:not(.hero):not(:has(textarea)):not(:has(form)):hover {
-    transform: translateY(-1px);
-  }
-}
-
-/* P8 Forms — textarea focus halo */
-textarea {
-  border-radius: 10px;
-  transition: border-color 0.15s ease, box-shadow 0.18s ease;
-}
-textarea:focus, textarea:focus-visible {
-  border-color: var(--accent, var(--focus, #2563eb));
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 18%, transparent);
-}
-
-/* P5 Status — aria-live regions render as accent-tinted pill */
-[aria-live="polite"], [aria-live="assertive"], #status {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.85em;
-  background: rgba(37,99,235,0.08);
-  background: color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 8%, transparent);
-  border: 1px solid rgba(37,99,235,0.18);
-  border: 1px solid color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 18%, transparent);
-  font-variant-numeric: tabular-nums;
-}
-
-/* P6 Details/teach-card — hover affordance */
-details.teach-card summary {
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 4px 6px;
-  margin: -4px -6px;
-  transition: background 0.15s ease;
-}
-details.teach-card summary:hover {
-  background: rgba(37,99,235,0.08);
-  background: color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 8%, transparent);
-}
-details.teach-card[open] summary {
-  margin-bottom: 4px;
-}
-
-/* P5 Mobile — sticky hero on small screens (with solid bg fallback) */
-@media (max-width: 640px) {
-  .hero {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    background: var(--card, #fff);
-    background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
-  }
-  @supports not (backdrop-filter: blur(8px)) {
-    .hero { background: var(--card, #fff); }
-  }
-}
-
-/* =====================================================================
- * v2.5 tool-specific — per-tool unique enhancements
- * Archetypes: chart_svg, file_upload, range_slider
- * ===================================================================== */
-
-/* Chart/SVG visualization emphasis */
-svg { display: block; max-width: 100%; }
-svg text { font-family: ui-sans-serif, system-ui, "Noto Sans SC", sans-serif; }
-.chart, .chart-card, .chartWrap, [id="chart"], [id="scatterPlot"], [id="chartContainer"] {
-  border-radius: 12px;
-  background: var(--card, #fff);
-  position: relative;
-}
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  svg [data-bar], svg .bar, svg path[data-segment], svg rect[data-bar] {
-    transition: opacity 0.15s ease;
-  }
-  svg [data-bar]:hover, svg .bar:hover { opacity: 0.85; }
-}
-
-/* File upload affordance */
-.dropzone, .drop-zone, .file-label, [id="dropzone"] {
-  border: 2px dashed var(--line, rgba(15,23,42,.18));
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
-  background: rgba(255,255,255,0.4);
-}
-.dropzone:hover, .drop-zone:hover, .file-label:hover {
-  border-color: var(--accent, var(--focus, #2563eb));
-  background: rgba(37,99,235,0.04);
-  background: color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 5%, transparent);
-}
-.dropzone.dragover, .drop-zone.dragover, .dropzone.drag-over, .drop-zone.drag-over {
-  border-color: var(--accent, var(--focus, #2563eb));
-  background: rgba(37,99,235,0.08);
-  background: color-mix(in srgb, var(--accent, var(--focus, #2563eb)) 10%, transparent);
-  transform: scale(1.005);
-}
-input[type="file"] { cursor: pointer; }
-
-/* Range slider track + thumb */
-input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 6px;
-  background: var(--line, rgba(15,23,42,.14));
-  border-radius: 999px;
-  outline: none;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--accent, var(--focus, #2563eb));
-  border: 2px solid #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  cursor: grab;
-  transition: transform 0.15s ease;
-}
-input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
-input[type="range"]::-moz-range-thumb {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--accent, var(--focus, #2563eb));
-  border: 2px solid #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  cursor: grab;
-}
-
-/* P17 — Slider handle emphasis */
-[id="slider"] {
-  cursor: ew-resize;
-}
-.compare {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-.example-btn { transition: transform 0.12s ease; }
-.example-btn:hover { transform: translateY(-1px); }
-

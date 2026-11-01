@@ -1,22 +1,19 @@
 /**
- * 🔌 通用 Service Worker — 缓存优先策略
- * 适用于全部 50 个新闻工具项目。
- *
- * 策略：
- * 1. 安装时预缓存当前项目的核心文件
- * 2. 缓存优先 (Cache-First) 获取静态资源
- * 3. 网络优先 (Network-First) 获取 API 请求
- * 4. 离线回退页面
+ * P17 Service Worker — 静态资源缓存优先，文档离线回退到本页。
  */
-const CACHE_NAME = "journalism-tool-v1";
+const CACHE_NAME = "p17-before-after-v1";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./pm-metrics.js",
+  "./favicon.svg",
+  "./manifest.json",
   "../shared/design-tokens.css",
-  "../shared/dark-toggle.js"
+  "../shared/modern-styles.css",
+  "../shared/tool-chrome.css",
+  "../shared/releases/v2.6/loader.js"
 ];
 
 // Install: Pre-cache core assets
@@ -39,7 +36,9 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+        keys
+          .filter((k) => k.startsWith("p17-before-after-") && k !== CACHE_NAME)
+          .map((k) => caches.delete(k))
       )
     )
   );
